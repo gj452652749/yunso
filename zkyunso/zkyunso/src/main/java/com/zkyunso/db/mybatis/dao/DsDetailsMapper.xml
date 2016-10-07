@@ -31,13 +31,13 @@
 		where id = #{id}
 	</delete>
 
-	<select id="findById" resultMap="dsDetailsResult">
+	<select id="getById" resultMap="dsDetailsResult">
 		select *
 		from DsDetails
 		where id = #{id}
 	</select>
 	
-	<select id="findAll" resultMap="dsDetailsResult">
+	<select id="getAll" resultMap="dsDetailsResult">
 		select * 
 		from DsDetails
 	</select>
