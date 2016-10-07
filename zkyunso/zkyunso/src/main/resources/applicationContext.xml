@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+	   http://www.springframework.org/schema/beans 
+	   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	    http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+       <!-- 解决乱码问题-->
+       	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		    <property name="messageConverters">
+		        <list>
+		            <bean id="utf8StringHttpMessageConverter" class="com.spring.util.UTF8StringHttpMessageConverter" />
+		        </list>
+		    </property>
+		</bean>
+		<!-- 1. 数据源 : DriverManagerDataSource -->
+		<bean id="dataSource" 
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+			<property name="url" value="jdbc:mysql://localhost:3306/yunso"/>
+			<property name="username" value="root"/>
+			<property name="password" value="22331144"/>
+		</bean>
+		
+		<!-- 
+			2. mybatis的SqlSession的工厂: SqlSessionFactoryBean 
+				dataSource / typeAliasesPackage
+		-->
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource"/>
+			<property name="typeAliasesPackage" value="com.view.model"/>
+		</bean>
+	
+		<!-- 
+			3. mybatis自动扫描加载Sql映射文件 : MapperScannerConfigurer 
+				sqlSessionFactory / basePackage
+		-->
+		<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<property name="basePackage" value="com.zkyunso.db.mybatis.dao"/>
+			<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		</bean> 
+		
+		<!-- 4. 事务管理 : DataSourceTransactionManager -->
+		<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"/>
+		</bean> 
+	
+		<!-- 5. 使用声明式事务 -->
+		<tx:annotation-driven transaction-manager="txManager" />
+			
+<!-- 增加SpringMVC对上传的支持 -->
+     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" p:defaultEncoding="utf-8" p:maxUploadSize="10000000" p:uploadTempDir="fileUpload/temp"/>
+	<!--bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" 
+		p:location="/WEB-INF/jdbc.properties" /> <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" 
+		p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}" p:username="${jdbc.username}" 
+		p:password="${jdbc.password}" / -->
+
+	<!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+
+<!--	<import resource="springConfig/springHibernate.xml"></import>-->
+<!--	<import resource="springConfig/DAO.xml"></import>-->
+<!--	<import resource="springConfig/bean.xml"></import>-->
+<!--	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		p:location="/WEB-INF/config/dbConnection.properties"
+		p:ignoreUnresolvablePlaceholders="true">
+
+	</bean>-->
+<!--        <bean id="handler1" class="com.milanosoft.RCS.web.webSocket.handler.SystemWebSocketHandler" ></bean>-->
+
+	<!-- Multiple Language Support -->
+<!--	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="globalMessages" />
+	</bean>-->
+
+	<!-- 上传文件解析器 -->
+<!--	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10000000" />
+	</bean>-->
+
+	<!-- Freemarker配置 -->
+<!--	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/view/" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">0</prop>
+				<prop key="default_encoding">UTF-8</prop>
+				<prop key="number_format">0.##########</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="classic_compatible">true</prop>
+				<prop key="template_exception_handler">ignore</prop>
+			</props>
+		</property>
+	</bean>-->
+                
+
+
+
+</beans>
