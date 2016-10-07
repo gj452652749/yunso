@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zkyunso.db.mybatis.dao.DsDetailsMapper">
+	<resultMap type="DsDetails" id="dsDetailsResult">
+		<result column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="remark" property="remark"/>
+		<result column="dbType" property="dbType"/>
+		<result column="dbUrl" property="dbUrl"/>
+	</resultMap>
+
+	<!-- 取得插入数据后的id -->
+	<insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into DsDetails(name,remark,dbType,dbUrl)
+		values(#{name},#{remark},#{dbType},#{dbUrl})
+	</insert>
+
+	<update id="update">
+		update DsDetails
+		set name = #{name},
+			remark = #{remark},
+			dbType = #{dbType},
+			dbUrl = #{dbUrl}
+		where user_id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from DsDetails
+		where id = #{id}
+	</delete>
+
+	<select id="findById" resultMap="dsDetailsResult">
+		select *
+		from DsDetails
+		where id = #{id}
+	</select>
+	
+	<select id="findAll" resultMap="dsDetailsResult">
+		select * 
+		from DsDetails
+	</select>
+</mapper>
