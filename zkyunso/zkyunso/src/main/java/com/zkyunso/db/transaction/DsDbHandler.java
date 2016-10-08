@@ -19,10 +19,12 @@ public class DsDbHandler {
 	/**
 	 * 获得datasource.jsp初始化所需的数据，并封装成json
 	 */
-	public void getIniDsPageData() {
+	public String getIniDsPageData() {
 		JSONObject result=new JSONObject();
 		List<DsDetails> dsDetailsBeans=dsDetailsMapper.getAll();
 		List<DsInfo> dsInfoBeans=dsInfoMapper.getAll();
-		result.put("", "");
+		result.put("details", dsDetailsBeans);
+		result.put("info", dsInfoBeans);
+		return result.toString();
 	}
 }

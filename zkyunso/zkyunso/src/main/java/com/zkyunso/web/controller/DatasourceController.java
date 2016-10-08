@@ -33,4 +33,14 @@ public class DatasourceController {
 	public String add() {// 2
 		return "result";// 返回首页
 	}
+	@ResponseBody
+	@RequestMapping(value = "/update/dsInfo", produces = "text/plain;charset=UTF-8")
+	public String updateInfo() {// 2
+		return "result";// 返回首页
+	}
+	@ResponseBody
+	@RequestMapping(value = "/update/dsDetails", produces = "text/plain;charset=UTF-8")
+	public String updateDetails() {// 2
+		return "result";// 返回首页
+	}
 }
