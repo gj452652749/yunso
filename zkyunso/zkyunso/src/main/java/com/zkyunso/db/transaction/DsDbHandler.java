@@ -24,7 +24,7 @@ public class DsDbHandler {
 		List<DsDetails> dsDetailsBeans=dsDetailsMapper.getAll();
 		List<DsInfo> dsInfoBeans=dsInfoMapper.getAll();
 		result.put("details", dsDetailsBeans);
-		result.put("info", dsInfoBeans);
+		result.put("infos", dsInfoBeans);
 		return result.toString();
 	}
 }

@@ -17,6 +17,7 @@
        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
        http://www.springframework.org/schema/tx 
        http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+       <bean id="dsDbHandler" class="com.zkyunso.db.transaction.DsDbHandler"></bean>
        <!-- 解决乱码问题-->
        	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		    <property name="messageConverters">
@@ -107,8 +108,5 @@
 			</props>
 		</property>
 	</bean>-->
-                
-
-
-
+                	
 </beans>
