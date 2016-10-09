@@ -2,6 +2,21 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <description>zkyunso</description>
     <distributable/>
+    <servlet>  
+        <servlet-name>dbrest</servlet-name>  
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer  
+        </servlet-class>  
+        <init-param>  
+            <param-name>jersey.config.server.provider.packages</param-name>  
+            <param-value>com.zkyunso.db.mybatis.service</param-value>  
+        </init-param>  
+        <load-on-startup>1</load-on-startup>  
+    </servlet>  
+    <servlet-mapping>  
+        <servlet-name>dbrest</servlet-name>  
+        <url-pattern>/dbrest/*</url-pattern>  
+    </servlet-mapping>
+    
     <servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.json</url-pattern>
@@ -78,7 +93,5 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    <listener>
-        <listener-class>com.zkyunso.listener.JaxrsEngine</listener-class>
-    </listener>
+   
 </web-app>
