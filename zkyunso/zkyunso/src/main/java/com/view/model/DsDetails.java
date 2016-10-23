@@ -4,9 +4,15 @@ public class DsDetails {
 	int id;
 	String name;
 	String remark;
-	int dbType;
+	String dbType;
 	String dbUrl;
-	
+	String createTime;
+	String serverIp;
+	int serverPort;
+	String serverUsrname;
+	String serverPsword;
+	String dbName;
+	String encode;
 	public int getId() {
 		return id;
 	}
@@ -25,10 +31,10 @@ public class DsDetails {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public int getDbType() {
+	public String getDbType() {
 		return dbType;
 	}
-	public void setDbType(int dbType) {
+	public void setDbType(String dbType) {
 		this.dbType = dbType;
 	}
 	public String getDbUrl() {
@@ -36,6 +42,48 @@ public class DsDetails {
 	}
 	public void setDbUrl(String dbUrl) {
 		this.dbUrl = dbUrl;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public String getServerIp() {
+		return serverIp;
+	}
+	public void setServerIp(String serverIp) {
+		this.serverIp = serverIp;
+	}
+	public int getServerPort() {
+		return serverPort;
+	}
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
+	}
+	public String getServerUsrname() {
+		return serverUsrname;
+	}
+	public void setServerUsrname(String serverUsrname) {
+		this.serverUsrname = serverUsrname;
+	}
+	public String getServerPsword() {
+		return serverPsword;
+	}
+	public void setServerPsword(String serverPsword) {
+		this.serverPsword = serverPsword;
+	}
+	public String getDbName() {
+		return dbName;
+	}
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+	public String getEncode() {
+		return encode;
+	}
+	public void setEncode(String encode) {
+		this.encode = encode;
 	}
 	
 }

@@ -9,12 +9,19 @@
 		<result column="remark" property="remark"/>
 		<result column="dbType" property="dbType"/>
 		<result column="dbUrl" property="dbUrl"/>
+		<result column="createTime" property="createTime"/>
+		<result column="serverIp" property="serverIp"/>
+		<result column="serverPort" property="serverPort"/>
+		<result column="serverUsrname" property="serverUsrname"/>
+		<result column="serverPsword" property="serverPsword"/>
+		<result column="dbName" property="dbName"/>
+		<result column="encode" property="encode"/>
 	</resultMap>
 
 	<!-- 取得插入数据后的id -->
 	<insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
-		insert into DsDetails(name,remark,dbType,dbUrl)
-		values(#{name},#{remark},#{dbType},#{dbUrl})
+		insert into DsDetails(name,remark,dbType,dbUrl,serverIp,serverPort,serverUsrname,serverPsword,dbName,encode)
+		values(#{name},#{remark},#{dbType},#{dbUrl},#{serverIp},#{serverPort},#{serverUsrname},#{serverPsword},#{dbName},#{encode})
 	</insert>
 
 	<update id="update">
@@ -22,8 +29,14 @@
 		set name = #{name},
 			remark = #{remark},
 			dbType = #{dbType},
-			dbUrl = #{dbUrl}
-		where user_id = #{id}
+			dbUrl = #{dbUrl},
+			serverIp = #{serverIp},
+			serverPort = #{serverPort},
+			serverUsrname = #{serverUsrname},
+			serverPsword = #{serverPsword},
+			dbName=#{dbName},
+			encode=#{encode}
+		where id = #{id}
 	</update>
 	
 	<delete id="delete">
