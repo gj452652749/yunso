@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DihConfMapper">
+	<resultMap type="DihConf" id="dihConfResult">
+		<result column="id" property="id"/>
+		<result column="dsId" property="dsId"/>
+		<result column="tbName" property="tbName"/>
+		<result column="dihjson" property="dihjson"/>
+	</resultMap>
+
+	<!-- 取得插入数据后的id -->
+	<insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+		insert into DihConf(dsId,tbName,dihjson)
+		values(#{dsId},#{tbName},#{dihjson})
+	</insert>
+
+	<update id="update">
+		update DihConf
+		set name = #{name},
+			tbName = #{tbName},
+			dihjson=#{dihjson}
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from DihConf
+		where id = #{id}
+	</delete>
+
+	<select id="getById" resultMap="dihConfResult">
+		select *
+		from DihConf
+		where id = #{id}
+	</select>
+	<select id="getByTb" resultMap="dihConfResult">
+		select *
+		from DihConf
+		where dsId = #{dsId} and tbName = #{tbName}
+	</select>
+	<select id="getAll" resultMap="dihConfResult">
+		select * 
+		from DihConf
+	</select>
+</mapper>

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.tool.xml.XmlHandler;
 import com.view.easyui.DataFormatter;
+import com.view.model.DsDetails;
 import com.web.bean.DbinfoBean;
 import com.zkyunso.db.handler.DbInfoHandler;
 import com.zkyunso.db.handler.MysqlInfoHandler;
@@ -123,6 +124,15 @@ public class DataimportController {
 		System.out.println(rows);
 		System.out.println(list.size());
 		return jsonStr;// 返回首页
+	}
+	/**
+	 * 根据数据源、表名、tbJson生成dih配置
+	 * @param ds
+	 * @param tbName
+	 * @param tbJson
+	 */
+	public void getDIHConf(DsDetails ds,String tbName) {
+		//如果没有，则生成默认的配置
 	}
 	/*
 	 * 更新数据库配置
