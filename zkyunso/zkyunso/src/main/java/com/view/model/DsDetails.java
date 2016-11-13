@@ -13,6 +13,7 @@ public class DsDetails {
 	String serverPsword;
 	String dbName;
 	String encode;
+	String defaultTb;
 	public int getId() {
 		return id;
 	}
@@ -84,6 +85,12 @@ public class DsDetails {
 	}
 	public void setEncode(String encode) {
 		this.encode = encode;
+	}
+	public String getDefaultTb() {
+		return defaultTb;
+	}
+	public void setDefaultTb(String defaultTb) {
+		this.defaultTb = defaultTb;
 	}
 	
 }

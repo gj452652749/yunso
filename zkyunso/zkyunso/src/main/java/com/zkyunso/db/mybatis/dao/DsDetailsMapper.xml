@@ -16,12 +16,13 @@
 		<result column="serverPsword" property="serverPsword"/>
 		<result column="dbName" property="dbName"/>
 		<result column="encode" property="encode"/>
+		<result column="defaultTb" property="defaultTb"/>
 	</resultMap>
 
 	<!-- 取得插入数据后的id -->
 	<insert id="save" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
-		insert into DsDetails(name,remark,dbType,dbUrl,serverIp,serverPort,serverUsrname,serverPsword,dbName,encode)
-		values(#{name},#{remark},#{dbType},#{dbUrl},#{serverIp},#{serverPort},#{serverUsrname},#{serverPsword},#{dbName},#{encode})
+		insert into DsDetails(name,remark,dbType,dbUrl,serverIp,serverPort,serverUsrname,serverPsword,dbName,encode,defaultTb)
+		values(#{name},#{remark},#{dbType},#{dbUrl},#{serverIp},#{serverPort},#{serverUsrname},#{serverPsword},#{dbName},#{encode},#{defaultTb})
 	</insert>
 
 	<update id="update">
@@ -35,7 +36,8 @@
 			serverUsrname = #{serverUsrname},
 			serverPsword = #{serverPsword},
 			dbName=#{dbName},
-			encode=#{encode}
+			encode=#{encode},
+			defaultTb=#{defaultTb}
 		where id = #{id}
 	</update>
 	

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="DihConfMapper">
+<mapper namespace="com.zkyunso.db.mybatis.dao.DihConfMapper">
 	<resultMap type="DihConf" id="dihConfResult">
 		<result column="id" property="id"/>
 		<result column="dsId" property="dsId"/>
@@ -18,7 +18,7 @@
 
 	<update id="update">
 		update DihConf
-		set name = #{name},
+		set dsId = #{dsId},
 			tbName = #{tbName},
 			dihjson=#{dihjson}
 		where id = #{id}
@@ -37,7 +37,7 @@
 	<select id="getByTb" resultMap="dihConfResult">
 		select *
 		from DihConf
-		where dsId = #{dsId} and tbName = #{tbName}
+		where dsId = #{0} and tbName = #{1}
 	</select>
 	<select id="getAll" resultMap="dihConfResult">
 		select * 

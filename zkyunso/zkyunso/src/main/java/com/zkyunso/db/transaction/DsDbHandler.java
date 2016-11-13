@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.view.model.DihConf;
 import com.view.model.DsDetails;
 import com.view.model.DsInfo;
+import com.zkyunso.db.handler.DbInfoHandler;
+import com.zkyunso.db.handler.MysqlInfoHandler;
 import com.zkyunso.db.mybatis.dao.DihConfMapper;
 import com.zkyunso.db.mybatis.dao.DsDetailsMapper;
 import com.zkyunso.db.mybatis.dao.DsInfoMapper;
@@ -35,10 +37,14 @@ public class DsDbHandler {
 		return result.toString();
 	}
 	public void addDetail(DsDetails ds) {
+		String url="jdbc:mysql://"+ds.getServerIp()+":"+ds.getServerPort()+"/"+ds.getDbName();
+		ds.setDbUrl(url);
 		dsDetailsMapper.save(ds);
 		System.out.println("updateInfo");
 	}
 	public void updateDetail(DsDetails ds) {
+		String url="jdbc:mysql://"+ds.getServerIp()+":"+ds.getServerPort()+"/"+ds.getDbName();
+		ds.setDbUrl(url);
 		dsDetailsMapper.update(ds);
 		System.out.println("updateInfo");
 	}
@@ -49,10 +55,20 @@ public class DsDbHandler {
 		}
 		return jsonArray.toString();
 	}
-	public void getDihConf(DsDetails ds,String tbName) {
+	public String getDihConf(int dsId,String tbName) {
+		DsDetails ds=dsDetailsMapper.getById(dsId);
 		DihConf bean=dihConfMapper.getByTb(ds.getId(), tbName);
 		if(null==bean) {
-			
+			DbInfoHandler dbHandler=new MysqlInfoHandler();
+			String json = dbHandler.getColJson("com.mysql.jdbc.Driver",
+					ds.getDbUrl(), ds.getServerUsrname(), ds.getServerPsword(),
+					tbName);
+//			String url="jdbc:mysql://127.0.0.1:3306/spring";
+//			String json = dbHandler.getColJson("com.mysql.jdbc.Driver",
+//					url, "root", "22331144",
+//					"book");
+			return json;
 		}
+		return bean.getDihjson();
 	}
 }

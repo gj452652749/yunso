@@ -6,11 +6,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +27,7 @@ import com.web.bean.DbinfoBean;
 import com.zkyunso.db.handler.DbInfoHandler;
 import com.zkyunso.db.handler.MysqlInfoHandler;
 import com.zkyunso.db.handler.TableField;
+import com.zkyunso.db.transaction.DsDbHandler;
 import com.zkyunso.db.utils.DBProperty;
 import com.zkyunso.search.handler.ConfHandler;
 import com.zkyunso.sys.SysUtil;
@@ -32,6 +36,8 @@ import com.zkyunso.sys.SysUtil;
 @RequestMapping("/dataimport")
 public class DataimportController {
 	DbInfoHandler dbHandler;
+	@Autowired
+	private DsDbHandler dsDbHandler;
 	/*
 	 * data-conf.xml操作类
 	 */
@@ -113,6 +119,23 @@ public class DataimportController {
 	 * 更新表配置信息
 	 */
 	@ResponseBody
+	@RequestMapping(value = "/updateTbConf/{id}", produces = "text/plain;charset=UTF-8")
+	public String updateTbConf(@PathVariable("id") Integer id,String rows,String dsJson) {// 2
+		DsDetails ds =(DsDetails) JSONObject.toBean(JSONObject.fromObject(dsJson),DsDetails.class);
+		String src = SysUtil.confRootDir + id + "\\tb.json";
+		String jsonStr = SysUtil.readFromFile(src);
+		JSONArray jsonArr=JSONArray.fromObject(rows);
+		List<TableField> list=JSONArray.toList(jsonArr);
+		String tokenizerJson=DataFormatter.list2mapjson(list);
+		SysUtil.stringToTxt(tokenizerJson, src);
+		System.out.println(rows);
+		System.out.println(list.size());
+		return jsonStr;// 返回首页
+	}
+	/*
+	 * 更新表配置信息
+	 */
+	@ResponseBody
 	@RequestMapping(value = "/updatetb/{id}", produces = "text/plain;charset=UTF-8")
 	public String updateTb(@PathVariable("id") Integer id,String rows,DbinfoBean dbinfo, String tbName) {// 2
 		String src = SysUtil.confRootDir + id + "\\tb.json";
@@ -131,8 +154,15 @@ public class DataimportController {
 	 * @param tbName
 	 * @param tbJson
 	 */
-	public void getDIHConf(DsDetails ds,String tbName) {
+	@ResponseBody
+	@RequestMapping(value = "/getDihConf")
+	public String getDIHConf(int dsId,String tbName) {
+		if(StringUtils.isEmpty(tbName)) 
+			return null;
 		//如果没有，则生成默认的配置
+		String json=dsDbHandler.getDihConf(dsId, tbName);
+		System.out.println("dihJSON:"+json);
+		return json;
 	}
 	/*
 	 * 更新数据库配置
