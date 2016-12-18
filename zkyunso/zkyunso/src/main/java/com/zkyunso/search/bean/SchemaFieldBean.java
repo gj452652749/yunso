@@ -1,17 +1,16 @@
 package com.zkyunso.search.bean;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-
-public class SchemaBean {
+public class SchemaFieldBean {
 	public String name;// solr对应列名
 	public String type;// 分词器类型
 	public boolean stored = true;
-	public SchemaBean() {
+	public String url="http://localhost:8090/solr/core1/schema?commit=true";
+	public SchemaFieldBean() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SchemaBean(String name, String type, boolean stored) {
+	public SchemaFieldBean(String name, String type, boolean stored) {
 		super();
 		this.name = name;
 		this.type = type;
@@ -41,4 +40,23 @@ public class SchemaBean {
 	public void setStored(boolean stored) {
 		this.stored = stored;
 	}
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String toAddFieldjson() {
+		return "";
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		
+		return super.toString();
+	}
+	
 }

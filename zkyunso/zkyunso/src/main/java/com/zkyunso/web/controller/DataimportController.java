@@ -29,6 +29,7 @@ import com.zkyunso.db.handler.MysqlInfoHandler;
 import com.zkyunso.db.handler.TableField;
 import com.zkyunso.db.transaction.DsDbHandler;
 import com.zkyunso.db.utils.DBProperty;
+import com.zkyunso.search.bean.SchemaBean;
 import com.zkyunso.search.handler.ConfHandler;
 import com.zkyunso.sys.SysUtil;
 
@@ -177,7 +178,7 @@ public class DataimportController {
 	 * 更新schema配置
 	 */
 	public void updateSchemaconf(List<TableField> listIn) {
-		List<TableField> list=new ArrayList<TableField>();
+		List<SchemaBean> list=new ArrayList<SchemaBean>();
 		list.addAll(listIn);
 		String json=DataFormatter.list2mapjson(list);
 		confHandler.addFiledJson(json);

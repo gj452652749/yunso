@@ -5,7 +5,7 @@ public class DsDetails {
 	String name;
 	String remark;
 	String dbType;
-	String dbUrl;
+	String dbUrl=null;
 	String createTime;
 	String serverIp;
 	int serverPort;
@@ -39,6 +39,9 @@ public class DsDetails {
 		this.dbType = dbType;
 	}
 	public String getDbUrl() {
+		if(null==this.dbUrl) {
+			
+		}
 		return dbUrl;
 	}
 	public void setDbUrl(String dbUrl) {
