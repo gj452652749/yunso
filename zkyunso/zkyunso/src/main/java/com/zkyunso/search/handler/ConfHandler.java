@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -113,7 +114,8 @@ public class ConfHandler {
 					HttpMethod.POST, entity, String.class);
 			System.out.println("USE: " + sentData.getBody());
 		}
-		public void addFields(List<SchemaBean> list,String url) {
+		public void addFields(List<? extends SchemaBean> list,String url) {
+			System.out.println("add schemas:"+url);
 			for(SchemaBean bean:list) 
 				addField(bean, url);
 		}
@@ -168,7 +170,8 @@ public class ConfHandler {
 	 */
 	public static class ConfContext {
 		
-		String SOLR_HOME="http://localhost:8090/solr";
+		public static String SOLR_HOME="http://localhost:8090/solr";
+		public static String SOLR_HOME_DIR="E:\\workplace\\svn\\zkyunso\\docs\\data-config1.xml";
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

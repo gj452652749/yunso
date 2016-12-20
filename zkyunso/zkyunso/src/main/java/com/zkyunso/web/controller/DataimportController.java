@@ -29,8 +29,11 @@ import com.zkyunso.db.handler.MysqlInfoHandler;
 import com.zkyunso.db.handler.TableField;
 import com.zkyunso.db.transaction.DsDbHandler;
 import com.zkyunso.db.utils.DBProperty;
+import com.zkyunso.mongo.service.MongoHandler;
 import com.zkyunso.search.bean.SchemaBean;
 import com.zkyunso.search.handler.ConfHandler;
+import com.zkyunso.search.handler.ConfHandler.DataConfHandler;
+import com.zkyunso.search.handler.ConfHandler.SchemaHandler;
 import com.zkyunso.sys.SysUtil;
 
 @Controller
@@ -47,6 +50,8 @@ public class DataimportController {
 	 * schema.xml操作类
 	 */
 	ConfHandler confHandler = new ConfHandler();
+	SchemaHandler schemaHandler =confHandler.new SchemaHandler();
+	DataConfHandler dataConfHandler=confHandler.new DataConfHandler();
 	/*
 	 * 获取数据源下所有数据库
 	 */
@@ -74,8 +79,8 @@ public class DataimportController {
 		String url="jdbc:mysql://"+dbinfo.getIp()+":"+dbinfo.getPort();
 		DBProperty dbProperty = new DBProperty("com.mysql.jdbc.Driver",
 				url, dbinfo.getUsername(), dbinfo.getPassword());
-				DbInfoHandler dbInfoHandler = new MysqlInfoHandler();
-				String tbs=dbInfoHandler.getTbs(dbProperty,dbinfo.getDb());
+		DbInfoHandler dbInfoHandler = new MysqlInfoHandler();
+		String tbs=dbInfoHandler.getTbs(dbProperty,dbinfo.getDb());
 		return tbs;// 返回首页
 	}
 	/*
@@ -117,20 +122,43 @@ public class DataimportController {
 		return jsonStr;// 返回首页
 	}
 	/*
+	 * 获取表配置信息
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getTbConf/{id}", produces = "text/plain;charset=UTF-8")
+	public String getTbConf(@PathVariable("id") Integer id,String userName,
+			String coreName,String rows,String dsJson) {// 2
+		DsDetails ds =(DsDetails) JSONObject.toBean(JSONObject.fromObject(dsJson),DsDetails.class);
+		String key=userName+"_"+coreName;
+		String jsonStr=MongoHandler.getInstance().get("tbConf",key);
+		return jsonStr;// 返回首页
+	}
+	/*
 	 * 更新表配置信息
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/updateTbConf/{id}", produces = "text/plain;charset=UTF-8")
-	public String updateTbConf(@PathVariable("id") Integer id,String rows,String dsJson) {// 2
+	public String updateTbConf(@PathVariable("id") Integer id,String userName,
+			String coreName,String rows,String dsJson) {// 2
 		DsDetails ds =(DsDetails) JSONObject.toBean(JSONObject.fromObject(dsJson),DsDetails.class);
 		String src = SysUtil.confRootDir + id + "\\tb.json";
 		String jsonStr = SysUtil.readFromFile(src);
 		JSONArray jsonArr=JSONArray.fromObject(rows);
-		List<TableField> list=JSONArray.toList(jsonArr);
+		List<TableField> list=(List<TableField>)JSONArray.toCollection(jsonArr, TableField.class);
 		String tokenizerJson=DataFormatter.list2mapjson(list);
 		SysUtil.stringToTxt(tokenizerJson, src);
 		System.out.println(rows);
 		System.out.println(list.size());
+		/**
+		 * 更新tbConf、对应schema和dihconf
+		 */
+		String core=userName+"_"+coreName;
+		String key=userName+"_"+coreName+"_"+ds.getDefaultTb();
+		String url=ConfHandler.ConfContext.SOLR_HOME+"/"+core+"/schema?commit=true";
+		MongoHandler.getInstance().put("tbConf", key,rows);
+		schemaHandler.addFields(list, url);
+		xmlHandler.addTb(ConfHandler.ConfContext.SOLR_HOME_DIR, 
+				list, ds);
 		return jsonStr;// 返回首页
 	}
 	/*
@@ -158,6 +186,16 @@ public class DataimportController {
 	@ResponseBody
 	@RequestMapping(value = "/getDihConf")
 	public String getDIHConf(int dsId,String tbName) {
+		if(StringUtils.isEmpty(tbName)) 
+			return null;
+		//如果没有，则生成默认的配置
+		String json=dsDbHandler.getDihConf(dsId, tbName);
+		System.out.println("dihJSON:"+json);
+		return json;
+	}
+	@ResponseBody
+	@RequestMapping(value = "/getDihConf")
+	public String doDIH(int dsId,String tbName) {
 		if(StringUtils.isEmpty(tbName)) 
 			return null;
 		//如果没有，则生成默认的配置

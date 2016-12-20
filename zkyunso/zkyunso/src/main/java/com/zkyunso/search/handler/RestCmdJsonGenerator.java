@@ -27,8 +27,8 @@ public class RestCmdJsonGenerator {
 	 * @return like {"add-field":{"name":"title","stored":true,"type":"ik"}}
 	 */
 	public static String generateAddFieldJson(SchemaBean bean) {
-		JSONObject jsonObj=new JSONObject();
-		jsonObj.put("add-field", bean);
+		JSONObject jsonObj=new JSONObject(); 
+		jsonObj.put("add-field", bean.toJson());
 		return jsonObj.toString();
 	}
 }

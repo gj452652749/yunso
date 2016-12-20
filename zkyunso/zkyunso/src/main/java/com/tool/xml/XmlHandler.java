@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -65,11 +66,24 @@ public class XmlHandler {
 			e.printStackTrace();
 		}
 	}
+	static public void deleteDataSourceOnExists(Element root,String name) {
+		Node node=root.selectSingleNode("/dataConfig/dataSource[@name='"+name+"']");	
+		if(null==node) return;
+		System.out.println(node.asXML());
+		root.remove(node); 
+	}
+	static public void deleteEntityOnExists(Element root,String name) {
+		Node node=root.selectSingleNode("/dataConfig/document/entity[@name='"+name+"']");
+		if(null==node) return;
+		System.out.println(node.asXML());
+		root.element("document").remove(node); 
+	}
 	/*
 	 * 增加Entity，对应数据表
 	 */
 	static public Element addEntity(Element root, String dataSource,
 			String tableName, List<TableField> fields) {
+		deleteEntityOnExists(root, dataSource+"_"+tableName);
 		Element doc = root.element("document");
 		Element entity = doc.addElement("entity");
 		StringBuilder sql = new StringBuilder();
@@ -77,7 +91,7 @@ public class XmlHandler {
 		for (TableField ele : fields) {
 			Element field = entity.addElement("field");
 			field.addAttribute("column", ele.getColumn());
-			field.addAttribute("name", ele.getColumn());
+			field.addAttribute("name", ele.getName());
 			sql.append(ele.getColumn()).append(",");
 		}
 		sql.deleteCharAt(sql.length() - 1);
@@ -98,6 +112,7 @@ public class XmlHandler {
 			String tableName) {
 		try {
 			Element root = readXml(src);
+			deleteDataSourceOnExists(root,dsName);
 			Element ds = root.addElement("dataSource");
 			ds.addAttribute("type", "JdbcDataSource");
 			ds.addAttribute("name", dsName);
@@ -157,14 +172,18 @@ public class XmlHandler {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		XmlHandler xmlHandler = new XmlHandler();
-		xmlHandler.addTest(
-				"E:\\workplace\\svn\\zkyunso\\docs\\data-config1.xml",
-				"com.mysql.jdbc.Driver",
-				"jdbc:mysql://113.10.157.185:3306/mydb", "root", "12345678",
-				"t_test01");
+//		xmlHandler.addTest(
+//				"E:\\workplace\\svn\\zkyunso\\docs\\data-config1.xml",
+//				"com.mysql.jdbc.Driver",
+//				"jdbc:mysql://113.10.157.185:3306/mydb", "root", "12345678",
+//				"t_test01");
 		try {
-			xmlHandler
-					.readXml("E:\\workplace\\search\\svn\\zkyunso\\docs\\data-config.xml");
+			Element root=xmlHandler
+					.readXml("E:\\workplace\\svn\\zkyunso\\docs\\data-config1.xml");
+//			xmlHandler.deleteDataSourceOnExists(root);
+//			xmlHandler.deleteDataSourceOnExists(root);
+			xmlHandler.deleteEntityOnExists(root,"node1");
+			//xmlHandler.deleteEntityOnExists(root,"node1");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

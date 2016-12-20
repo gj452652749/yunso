@@ -41,4 +41,10 @@ public class SchemaBean {
 	public void setStored(boolean stored) {
 		this.stored = stored;
 	}
+	/**
+	 * 转成solr restful 请求的json格式
+	 */
+	public String toJson() {
+		return "{\"name\":\""+this.name+"\",\"stored\":"+this.isStored()+",\"type\":\""+this.type+"\"}";
+	}
 }
