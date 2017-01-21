@@ -142,7 +142,8 @@ public class XmlHandler {
 	 * 添加表信息到dataconf
 	 */
 	public void addTb(String src,List<TableField> list,DsDetails ds) {
-		String url="jdbc:mysql://"+ds.getServerIp()+":"+ds.getServerPort();
+		String url="jdbc:mysql://"+ds.getServerIp()+":"+ds.getServerPort()+"/"+ds.getDbName()
+				+"?useUnicode=true&characterEncoding=utf-8";
 		DBProperty dbProperty = new DBProperty("com.mysql.jdbc.Driver",
 				url, ds.getServerUsrname(), ds.getServerPsword());
 		Element root = addDataSource(src, ds.getName(),dbProperty, ds.getDefaultTb());

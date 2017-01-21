@@ -42,6 +42,13 @@ public class DatasourceController {
 		return dsDbHandler.getIniDsPageData();// 返回首页
 	}
 	@ResponseBody
+	@RequestMapping(value = "/delete")
+	public String delete(Integer id) {// 2
+		dsDbHandler.deleteDs(id);
+		System.out.println("delete:"+id);
+		return dsDbHandler.getIniDsPageData();// 返回首页
+	}
+	@ResponseBody
 	@RequestMapping(value = "/update/dsInfo", produces = "text/plain;charset=UTF-8")
 	public String updateInfo() {// 2
 		return "result";// 返回首页

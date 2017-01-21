@@ -12,7 +12,7 @@ public class DataFormatter {
 		map.put("total", list.size());
 		map.put("rows", list);
 		JSONObject json = JSONObject.fromObject(map);
-		System.out.println(json);
+		System.out.println("generate default:"+json);
 		return json.toString();
 	}
 }

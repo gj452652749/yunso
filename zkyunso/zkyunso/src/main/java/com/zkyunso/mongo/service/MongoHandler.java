@@ -58,8 +58,10 @@ public class MongoHandler {
 	public String get(String collName,String key) {
 		MongoCollection<Document> collection = mongoDatabase.getCollection(collName);
 		Document doc = collection.find
-				(new BasicDBObject ("key",key)).first();  
-        return doc.getString("value");  
+				(new BasicDBObject ("key",key)).first();
+		if(null!=doc)
+			return doc.getString("value");  
+		else return null;
 	}
 	public void put(String collName,String key,String value) {
 		MongoCollection<Document> collection = mongoDatabase.getCollection(collName);

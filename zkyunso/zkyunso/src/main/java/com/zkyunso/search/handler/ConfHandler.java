@@ -107,8 +107,20 @@ public class ConfHandler {
 			System.out.println(json);
 			return json.toString();
 		}
+		public boolean isFiledContained(String name,String url) {
+			String isFiledContainedUrl=url.substring(0, url.indexOf("?"))+"/fields/"+name;
+			ResponseEntity<String> response=restTemplate.getForEntity(isFiledContainedUrl, String.class);
+			System.out.println("isFiledContained:"+response.getBody());
+			if(response.getBody().contains("not found"))
+				return false;
+			return true;
+		}
 		public void addField(SchemaBean bean,String url) {
-			String fieldJson=RestCmdJsonGenerator.generateAddFieldJson(bean);
+			String fieldJson=null;
+			//存在则更新；不存在则添加
+			if(isFiledContained(bean.getName(),url))
+				fieldJson=RestCmdJsonGenerator.generateReplaceFieldJson(bean);
+			else	fieldJson=RestCmdJsonGenerator.generateAddFieldJson(bean);
 			HttpEntity<String> entity = new HttpEntity<String>(fieldJson, headers);
 			ResponseEntity<String> sentData = restTemplate.exchange(url,
 					HttpMethod.POST, entity, String.class);
@@ -138,8 +150,10 @@ public class ConfHandler {
 	public class DataConfHandler {
 		public String REST_DO_FULLIMPORT="http://localhost:8090/solr/core1/dataimport?command=full-import&clean=true&commit=true";
 		public String REST_DO_DELTAIMPORT="http://localhost:8090/solr/core1/dataimport?command=full-import&clean=false&commit=true";
+		public String REST_DO_ENTITYIMPORT="http://localhost:8090/solr/core1/dataimport?clean=true&command=full-import&commit=true&debug=false&entity=entity1&indent=true&optimize=false&verbose=false&wt=json";
 		public String FULLIMPORT_MODE="full";
 		public String DELTAIMPORT_MODE="delta";
+		public String ENTITYMPORT_MODE="entity";
 		/**
 		 * 
 		 * @param dihJson dih字段
@@ -155,11 +169,18 @@ public class ConfHandler {
 		 * 执行dih操作 full/delta模式
 		 * @param mode
 		 */
-		public void doDih(String mode) {
-			String response=null;
+		public void doDih(String userName,String coreName,String entityName,String mode) {
+			String core=userName+"_"+coreName;
+			String url=null;
 			if(mode.equals(this.FULLIMPORT_MODE))
-				response=restTemplate.getForObject(REST_DO_FULLIMPORT, String.class);
-			else response=restTemplate.getForObject(REST_DO_DELTAIMPORT, String.class);
+				url=REST_DO_FULLIMPORT.replace("core1", core);
+			else if(mode.equals(this.DELTAIMPORT_MODE))
+				url=REST_DO_DELTAIMPORT.replace("core1", core);
+			else {
+				url=REST_DO_ENTITYIMPORT.replace("core1", core).replace("entity1", entityName);				
+			}
+			System.out.println("doDIH:"+url);
+			String response=null;response=restTemplate.getForObject(url, String.class);
 			System.out.println(response);
 		}
 	}
@@ -171,7 +192,7 @@ public class ConfHandler {
 	public static class ConfContext {
 		
 		public static String SOLR_HOME="http://localhost:8090/solr";
-		public static String SOLR_HOME_DIR="E:\\workplace\\svn\\zkyunso\\docs\\data-config1.xml";
+		public static String SOLR_HOME_DIR="E:\\workplace\\server\\tomcat7_5.2.1\\webapps\\solr\\solr_home\\solr\\core1\\conf\\data-config.xml";
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

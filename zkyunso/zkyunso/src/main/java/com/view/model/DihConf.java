@@ -1,9 +1,17 @@
 package com.view.model;
 
 public class DihConf {
+	int id=0;
 	int dsId;
 	String tbName;
 	String dihjson;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getDsId() {
 		return dsId;
 	}

@@ -31,4 +31,9 @@ public class RestCmdJsonGenerator {
 		jsonObj.put("add-field", bean.toJson());
 		return jsonObj.toString();
 	}
+	public static String generateReplaceFieldJson(SchemaBean bean) {
+		JSONObject jsonObj=new JSONObject(); 
+		jsonObj.put("replace-field", bean.toJson());
+		return jsonObj.toString();
+	}
 }

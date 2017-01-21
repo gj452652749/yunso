@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.tool.xml.XmlHandler;
 import com.view.easyui.DataFormatter;
+import com.view.model.ConfiguredTb;
 import com.view.model.DsDetails;
 import com.web.bean.DbinfoBean;
 import com.zkyunso.db.handler.DbInfoHandler;
@@ -83,6 +84,16 @@ public class DataimportController {
 		String tbs=dbInfoHandler.getTbs(dbProperty,dbinfo.getDb());
 		return tbs;// 返回首页
 	}
+	/**
+	 * 获取对应dsId下所有已配置的表名
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getConfiguredTbs")
+	public String getConfiguredTbs(Integer dsId,HttpServletResponse response) {// 2
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		String tbs=dsDbHandler.getConfiguredTbs(dsId);
+		return tbs;// 返回首页
+	}
 	/*
 	 * 获取表字段信息
 	 */
@@ -125,11 +136,10 @@ public class DataimportController {
 	 * 获取表配置信息
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getTbConf/{id}", produces = "text/plain;charset=UTF-8")
-	public String getTbConf(@PathVariable("id") Integer id,String userName,
-			String coreName,String rows,String dsJson) {// 2
-		DsDetails ds =(DsDetails) JSONObject.toBean(JSONObject.fromObject(dsJson),DsDetails.class);
-		String key=userName+"_"+coreName;
+	@RequestMapping(value = "/getTbConf", produces = "text/plain;charset=UTF-8")
+	public String getTbConf(String userName,
+			String coreName,String tbName) {// 2
+		String key=userName+"_"+coreName+"_"+tbName;
 		String jsonStr=MongoHandler.getInstance().get("tbConf",key);
 		return jsonStr;// 返回首页
 	}
@@ -153,11 +163,15 @@ public class DataimportController {
 		 * 更新tbConf、对应schema和dihconf
 		 */
 		String core=userName+"_"+coreName;
-		String key=userName+"_"+coreName+"_"+ds.getDefaultTb();
+		//String key=userName+"_"+coreName+"_"+ds.getDefaultTb();
+		//String key=userName+"_"+coreName+"_"+ds.getId()+"_"+ds.getDefaultTb();
+		String key=ds.getId()+"_"+ds.getDefaultTb();
 		String url=ConfHandler.ConfContext.SOLR_HOME+"/"+core+"/schema?commit=true";
+		String dir=(ConfHandler.ConfContext.SOLR_HOME_DIR).replace("core1", core);
+		dsDbHandler.putConfiguredTb(new ConfiguredTb(0,ds.getId(),ds.getDefaultTb()));
 		MongoHandler.getInstance().put("tbConf", key,rows);
 		schemaHandler.addFields(list, url);
-		xmlHandler.addTb(ConfHandler.ConfContext.SOLR_HOME_DIR, 
+		xmlHandler.addTb(dir, 
 				list, ds);
 		return jsonStr;// 返回首页
 	}
@@ -188,20 +202,23 @@ public class DataimportController {
 	public String getDIHConf(int dsId,String tbName) {
 		if(StringUtils.isEmpty(tbName)) 
 			return null;
+		String key=dsId+"_"+tbName;
+		String json=MongoHandler.getInstance().get("tbConf", key);
 		//如果没有，则生成默认的配置
-		String json=dsDbHandler.getDihConf(dsId, tbName);
+		if(null==json)
+			json=dsDbHandler.generateDefaultfTbConf(dsId, tbName);
 		System.out.println("dihJSON:"+json);
 		return json;
 	}
 	@ResponseBody
-	@RequestMapping(value = "/getDihConf")
-	public String doDIH(int dsId,String tbName) {
+	@RequestMapping(value = "/doDIH")
+	public String doDIH(String userName,String coreName,int dsId,String tbName) {
 		if(StringUtils.isEmpty(tbName)) 
 			return null;
-		//如果没有，则生成默认的配置
-		String json=dsDbHandler.getDihConf(dsId, tbName);
-		System.out.println("dihJSON:"+json);
-		return json;
+		DsDetails ds=dsDbHandler.getDsDetails(dsId);
+		String entityName=ds.getName()+"_"+tbName;
+		dataConfHandler.doDih(userName,coreName,entityName,"entity");
+		return "dih done";
 	}
 	/*
 	 * 更新数据库配置

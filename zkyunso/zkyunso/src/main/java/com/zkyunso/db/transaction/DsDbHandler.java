@@ -7,11 +7,13 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.view.model.ConfiguredTb;
 import com.view.model.DihConf;
 import com.view.model.DsDetails;
 import com.view.model.DsInfo;
 import com.zkyunso.db.handler.DbInfoHandler;
 import com.zkyunso.db.handler.MysqlInfoHandler;
+import com.zkyunso.db.mybatis.dao.ConfiguredTbMapper;
 import com.zkyunso.db.mybatis.dao.DihConfMapper;
 import com.zkyunso.db.mybatis.dao.DsDetailsMapper;
 import com.zkyunso.db.mybatis.dao.DsInfoMapper;
@@ -23,6 +25,8 @@ public class DsDbHandler {
 	private DsInfoMapper dsInfoMapper;
 	@Autowired
 	private DihConfMapper dihConfMapper;
+	@Autowired
+	ConfiguredTbMapper configuredTbMapper;
 	/**
 	 * 获得datasource.jsp初始化所需的数据，并封装成json
 	 */
@@ -42,6 +46,10 @@ public class DsDbHandler {
 		dsDetailsMapper.save(ds);
 		System.out.println("updateInfo");
 	}
+	public void deleteDs(int dsId) {
+		dsDetailsMapper.delete(dsId);
+		System.out.println("delete ds");
+	}
 	public void updateDetail(DsDetails ds) {
 		String url="jdbc:mysql://"+ds.getServerIp()+":"+ds.getServerPort()+"/"+ds.getDbName();
 		ds.setDbUrl(url);
@@ -54,6 +62,29 @@ public class DsDbHandler {
 			jsonArray.add(ele);
 		}
 		return jsonArray.toString();
+	}
+	public DsDetails getDsDetails(int dsId) {
+		DsDetails ds=dsDetailsMapper.getById(dsId);
+		return ds;
+	}
+	public void putDihConf(DihConf bean) {
+		if(0==bean.getId())
+			dihConfMapper.save(bean);
+		else dihConfMapper.update(bean);
+	}
+	public void addDihConf(DihConf bean) {
+		dihConfMapper.save(bean);
+	}
+	public void updateDihConf(DihConf bean) {
+		dihConfMapper.update(bean);
+	}
+	public String generateDefaultfTbConf(int dsId,String tbName) {
+		DsDetails ds=dsDetailsMapper.getById(dsId);
+			DbInfoHandler dbHandler=new MysqlInfoHandler();
+			String json = dbHandler.getColJson("com.mysql.jdbc.Driver",
+					ds.getDbUrl(), ds.getServerUsrname(), ds.getServerPsword(),
+					tbName);
+			return json;
 	}
 	public String getDihConf(int dsId,String tbName) {
 		DsDetails ds=dsDetailsMapper.getById(dsId);
@@ -70,5 +101,21 @@ public class DsDbHandler {
 			return json;
 		}
 		return bean.getDihjson();
+	}
+	public void putConfiguredTb(ConfiguredTb bean) {
+		int count=configuredTbMapper.isExist(bean);
+		if(0==count)
+			configuredTbMapper.save(bean);
+	}
+	public String getConfiguredTbs(int dsId) {
+		JSONArray jsonArray=new JSONArray();
+		ConfiguredTb bean=new ConfiguredTb();
+		bean.setDsId(dsId);
+		List<ConfiguredTb> beans= configuredTbMapper.getTbsByDs(bean);
+		for(ConfiguredTb ele:beans) {
+			System.out.println(ele.getTbName());
+			jsonArray.add(ele.getTbName());
+		}
+		return jsonArray.toString();
 	}
 }
