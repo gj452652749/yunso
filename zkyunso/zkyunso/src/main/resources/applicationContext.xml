@@ -26,6 +26,23 @@
 		        </list>
 		    </property>
 		</bean>
+		<!-- jsackson 解决post json问题 -->
+		<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJackson2HttpMessageConverter" />
+            </list>
+        </property>
+    </bean>
+    <bean id="mappingJackson2HttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/html;charset=UTF-8</value>
+                <value>text/json;charset=UTF-8</value>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
 		<!-- 1. 数据源 : DriverManagerDataSource -->
 		<bean id="dataSource" 
 			class="org.springframework.jdbc.datasource.DriverManagerDataSource">

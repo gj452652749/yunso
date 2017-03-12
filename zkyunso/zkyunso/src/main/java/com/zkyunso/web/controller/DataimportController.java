@@ -212,13 +212,21 @@ public class DataimportController {
 	}
 	@ResponseBody
 	@RequestMapping(value = "/doDIH")
-	public String doDIH(String userName,String coreName,int dsId,String tbName) {
+	public String doDIH(final String userName,final String coreName,final int dsId,final String tbName) {
 		if(StringUtils.isEmpty(tbName)) 
 			return null;
-		DsDetails ds=dsDbHandler.getDsDetails(dsId);
-		String entityName=ds.getName()+"_"+tbName;
-		dataConfHandler.doDih(userName,coreName,entityName,"entity");
-		return "dih done";
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				DsDetails ds=dsDbHandler.getDsDetails(dsId);
+				String entityName=ds.getName()+"_"+tbName;
+				dataConfHandler.doDih(userName,coreName,entityName,"entity");
+				
+			}
+		}).start();		
+		return "dih begin";
 	}
 	/*
 	 * 更新数据库配置

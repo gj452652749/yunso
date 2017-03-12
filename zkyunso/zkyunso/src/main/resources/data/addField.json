@@ -1,0 +1,6 @@
+{
+  "add-field":{
+     "name":"sell-by",
+     "type":"tdate",
+     "stored":true }
+}

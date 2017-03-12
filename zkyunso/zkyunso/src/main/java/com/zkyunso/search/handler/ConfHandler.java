@@ -17,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.tool.xml.XmlHandler;
@@ -109,10 +110,18 @@ public class ConfHandler {
 		}
 		public boolean isFiledContained(String name,String url) {
 			String isFiledContainedUrl=url.substring(0, url.indexOf("?"))+"/fields/"+name;
-			ResponseEntity<String> response=restTemplate.getForEntity(isFiledContainedUrl, String.class);
-			System.out.println("isFiledContained:"+response.getBody());
-			if(response.getBody().contains("not found"))
+			System.out.println("isFiledContainedUrl:"+isFiledContainedUrl);
+			ResponseEntity<String> response=null;
+			//restTemplate碰到json status为404的会抛出异常
+			try{
+			response=restTemplate.getForEntity(isFiledContainedUrl, String.class);
+			}catch(HttpClientErrorException e) {
+				System.out.println("field "+name+" not found");
 				return false;
+			}
+			System.out.println("isFiledContained:"+response.getBody());
+//			if(response.getBody().contains("not found"))
+//				return false;
 			return true;
 		}
 		public void addField(SchemaBean bean,String url) {

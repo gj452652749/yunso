@@ -23,7 +23,7 @@
 <body class="fixed-sidebar no-skin-config full-height-layout">
 
 <div id="wrapper">
-
+好
 </div>
 
 

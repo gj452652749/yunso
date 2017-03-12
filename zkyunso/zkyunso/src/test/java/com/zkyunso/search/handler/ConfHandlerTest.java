@@ -18,7 +18,7 @@ public class ConfHandlerTest {
 	DataConfHandler dataConfHandler=confhandler.new DataConfHandler();
 	@Test
 	public void addField() {
-		SchemaBean bean=new SchemaBean("titleik1","text_ik",true);
+		SchemaBean bean=new SchemaBean("titleik1","text_ik","true","true");
 		schemaHandler.addField(bean,"http://localhost:8090/solr/core1/schema?commit=true");
 	}
 	/**ds+fileds——>dih配置
@@ -60,10 +60,11 @@ public class ConfHandlerTest {
 		ds.setDefaultTb("marker");
 		List<TableField> list =new ArrayList<TableField>();
 		list.add(new TableField(false,"name","name","text_general"));
-		list.add(new TableField(false,"title","title","text_general"));
+		list.add(new TableField(false,"title","titleik","text_general"));
 		xmlHandler.addTb("E:\\workplace\\svn\\zkyunso\\docs\\data-config1.xml", 
 				list, ds);
-		dataConfHandler.doDih("full");
+		String entityName=ds.getName()+"_"+ds.getDefaultTb();
+		dataConfHandler.doDih("gj","core1",entityName,"full");
 	}
 	@Test
 	public void generateDihDbConf() {

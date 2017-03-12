@@ -63,6 +63,20 @@ public class MongoHandler {
 			return doc.getString("value");  
 		else return null;
 	}
+	public String getAll(String collName,BasicDBObject stmt) {
+		MongoCollection<Document> collection = mongoDatabase.getCollection(collName);
+		FindIterable<Document> doc = collection.find(stmt);  
+		return null;
+	}
+	public String getAll(String collName,String stmtJson) {
+		MongoCollection<Document> collection = mongoDatabase.getCollection(collName);
+		FindIterable<Document> findIterable  = collection.find( Document.parse(stmtJson));  
+		 MongoCursor<Document> mongoCursor = findIterable.iterator();
+		 while(mongoCursor.hasNext()){  
+            System.out.println(mongoCursor.next());  
+         } 
+		return null;
+	}
 	public void put(String collName,String key,String value) {
 		MongoCollection<Document> collection = mongoDatabase.getCollection(collName);
 		Document doc = new Document("key", key).  
